@@ -36,6 +36,10 @@ class CreateFailed(Exception):
     pass
 
 
+class DeleteFailed(Exception):
+    pass
+
+
 class Response:
     def __init__(self, response):
         for key in response:
@@ -126,4 +130,19 @@ class TaskApi(Api):
             raise CreateFailed()
 
     def delete(self, name):
-        return Response({"success": True})
+        ids = []
+        for task in self.list().data['tasks']:
+            if name in task['title']:
+                ids.append(task['id'])
+        return self._delete(",".join(ids))
+
+    def _delete(self, id):
+        builder = self._get_builder()
+        builder.method = "delete"
+        builder.param["id"] = id
+        request = builder.build_get()
+        try:
+            response = Response(get(request))
+            return response
+        except Exception:
+            raise DeleteFailed()
