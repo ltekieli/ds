@@ -9,8 +9,14 @@ def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def query(url):
+def get(url):
     api_response = urllib2.urlopen(url).read()
+    return json.loads(api_response)
+
+
+def post(url, request):
+    req = urllib2.Request(url, request)
+    api_response = urllib2.urlopen(req).read()
     return json.loads(api_response)
 
 
@@ -23,6 +29,10 @@ class LogoutFailed(Exception):
 
 
 class FetchFailed(Exception):
+    pass
+
+
+class CreateFailed(Exception):
     pass
 
 
@@ -62,9 +72,9 @@ class AuthApi(Api):
         builder.method = "login"
         builder.param["account"] = account
         builder.param["passwd"] = password
-        request = builder.build()
+        request = builder.build_get()
         try:
-            response = Response(query(request))
+            response = Response(get(request))
             return response.data["sid"]
         except Exception:
             raise LoginFailed()
@@ -72,9 +82,9 @@ class AuthApi(Api):
     def logout(self):
         builder = self._get_builder()
         builder.method = "logout"
-        request = builder.build()
+        request = builder.build_get()
         try:
-            response = Response(query(request))
+            response = Response(get(request))
             return response.success
         except Exception:
             raise LogoutFailed()
@@ -91,15 +101,29 @@ class TaskApi(Api):
         builder.api = "SYNO.DownloadStation.Task"
         builder.version = 1
         builder.sid = self._sid
-        builder.param["additional"] = "detail,transfer"
         return builder
 
     def list(self):
         builder = self._get_builder()
+        builder.param["additional"] = "detail,transfer"
         builder.method = "list"
-        request = builder.build()
+        request = builder.build_get()
         try:
-            response = Response(query(request))
+            response = Response(get(request))
             return response
         except Exception:
             raise FetchFailed()
+
+    def create(self, uri):
+        builder = self._get_builder()
+        builder.method = "create"
+        builder.param["uri"] = uri
+        (url, request) = builder.build_post()
+        try:
+            response = Response(post(url, request))
+            return response
+        except Exception:
+            raise CreateFailed()
+
+    def delete(self, name):
+        return Response({"success": True})

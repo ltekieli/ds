@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import argparse
 import json
 import os
 import random
@@ -44,10 +45,30 @@ def print_tasks(tasks):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--create", nargs='+', help="Creates new download from link")
+    parser.add_argument("-d", "--delete", nargs='+', help="Delets task based on its name")
+    args = parser.parse_args()
+
     with Session("192.168.1.250", 5000, os.environ['SYNO_USER'], os.environ['SYNO_PASSWD']) as session:
-        data = session.task_api.list().data
-        # print json.dumps(data, indent=2)
-        print_tasks(data["tasks"])
+        if args.create:
+            for uri in args.create:
+                if session.task_api.create(uri).success:
+                    print "Torrent added succesfully"
+                else:
+                    print "ERROR! Torrent not added"
+
+        if args.delete:
+            for name in args.delete:
+                if session.task_api.delete(name).success:
+                    print "Torrent {} deleted succesfully".format(name)
+                else:
+                    print "ERROR! Torrent {} not deleted".format(name)
+
+        if not args.create and not args.delete:
+            data = session.task_api.list().data
+            print_tasks(data["tasks"])
+
 
 if __name__ == "__main__":
     main()

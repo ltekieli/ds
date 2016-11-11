@@ -1,3 +1,6 @@
+from collections import OrderedDict
+import urllib
+
 class QueryBuilder:
     def __init__(self):
         self._param = dict()
@@ -35,11 +38,23 @@ class QueryBuilder:
     def param(self):
         return self._param
 
-    def build(self):
-        query = "http://" + self.host + ":" + str(self.port) + self.cgi_path + "?api=" + \
-            self.api + "&version=" + str(self.version) + "&method=" + self.method
-        for k, v in self.param.iteritems():
-            query += "&{}={}".format(k, v)
+    def _build(self):
+        url = "http://" + self.host + ":" + str(self.port) + self.cgi_path
+
+        query = OrderedDict()
+        query['api'] = self.api
+        query['version'] = self.version
+        query['method'] = self.method
+        query.update(self.param)
+
         if self.sid:
-            query += "&_sid=" + self.sid
-        return query
+            query['_sid'] = self.sid
+
+        return (url, urllib.urlencode(query))
+
+    def build_get(self):
+        url, data = self._build()
+        return url + "?" + data
+
+    def build_post(self):
+        return self._build()
