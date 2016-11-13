@@ -8,7 +8,10 @@ import string
 import urllib2
 
 from decimal import Decimal
-from api import AuthApi, TaskApi
+
+from ds import AuthApi
+from ds import TaskApi
+from ds import Response
 
 class Session:
     def __init__(self, host, port, username, password):

@@ -1,4 +1,4 @@
-from qb import QueryBuilder
+from ds.qb import QueryBuilder
 
 def helper_get_login_builder():
     builder = QueryBuilder()
