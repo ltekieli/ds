@@ -8,5 +8,5 @@ setup(name='ds',
       author_email='mail@ltekieli.com',
       license='MIT',
       packages=find_packages(),
-      scripts=['bin/sds'],
+      scripts=['bin/synods'],
       zip_safe=False)

@@ -146,3 +146,20 @@ class TaskApi(Api):
             return response
         except Exception:
             raise DeleteFailed()
+
+
+class Session:
+    def __init__(self, host, port, username, password):
+        self.auth_api = AuthApi(host, port)
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+
+    def __enter__(self):
+        self.id = self.auth_api.login(self.username, self.password)
+        self.task_api = TaskApi(self.host, self.port, self.id)
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.auth_api.logout()
