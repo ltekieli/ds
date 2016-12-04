@@ -25,19 +25,42 @@ def print_tasks(tasks):
         if (task_length < TASK_NAME_LENGTH):
             task_name += ' ' * (TASK_NAME_LENGTH - task_length)
         try:
-            progress = Decimal(task['additional']['transfer']['size_downloaded']) / Decimal(task['size']) * 100
-            print "%s\t%s\t%0.2fMB/s\t%0.1f%%" % (task_name, task['status'], Decimal(task['additional']['transfer']['speed_download']) / 1000 / 1000, progress)
-        except:
-            pass
+            result = dict()
+            result['task_name'] = task_name
+            result['progress'] = Decimal(task['additional']['transfer']['size_downloaded']) / Decimal(task['size']) * 100
+            result['status'] = task['status']
+            result['speed'] = Decimal(task['additional']['transfer']['speed_download']) / 1000 / 1000
+            print '{task_name}\t{status}\t{speed:0.2f}MB/s\t{progress:0.2f}%'.format(**result)
+        except Exception as e:
+            print e.message
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description='Utility for listing, creating and deleting tasks in Synology Download Station',
+        epilog='Utility can use environment variables: SYNO_IP, SYNO_PORT, SYNO_USER, SYNO_PASSWD instead of arguments'
+    )
+    parser.add_argument("-i", "--ip", nargs='?', help="Synology ip")
+    parser.add_argument("-r", "--port", nargs='?', help="Synology port")
+    parser.add_argument("-u", "--user", nargs='?', help="Synology username")
+    parser.add_argument("-p", "--passwd", nargs='?', help="Synology user password")
     parser.add_argument("-c", "--create", nargs='+', help="Creates new download from link")
     parser.add_argument("-d", "--delete", nargs='+', help="Delets task based on its name")
     args = parser.parse_args()
 
-    with Session("192.168.1.250", 5000, os.environ['SYNO_USER'], os.environ['SYNO_PASSWD']) as session:
+    if not args.ip:
+        args.ip = os.environ['SYNO_IP']
+
+    if not args.port:
+        args.port = os.environ['SYNO_PORT']
+
+    if not args.user:
+        args.user = os.environ['SYNO_USER']
+
+    if not args.passwd:
+        args.passwd = os.environ['SYNO_PASSWD']
+
+    with Session(args.ip, args.port, args.user, args.passwd) as session:
         if args.create:
             for uri in args.create:
                 if session.task_api.create(uri).success:
