@@ -13,26 +13,7 @@ from ds import AuthApi
 from ds import TaskApi
 from ds import Response
 from ds import Session
-
-def print_tasks(tasks):
-    TASK_NAME_LENGTH = 50
-    for task in tasks:
-        if (len(task['title']) < TASK_NAME_LENGTH):
-            task_name = task['title'][0:TASK_NAME_LENGTH]
-        else:
-            task_name = task['title'][0:TASK_NAME_LENGTH] + "..."
-        task_length = len(task_name)
-        if (task_length < TASK_NAME_LENGTH):
-            task_name += ' ' * (TASK_NAME_LENGTH - task_length)
-        try:
-            result = dict()
-            result['task_name'] = task_name
-            result['progress'] = Decimal(task['additional']['transfer']['size_downloaded']) / Decimal(task['size']) * 100
-            result['status'] = task['status']
-            result['speed'] = Decimal(task['additional']['transfer']['speed_download']) / 1000 / 1000
-            print '{task_name}\t{status}\t{speed:0.2f}MB/s\t{progress:0.2f}%'.format(**result)
-        except Exception as e:
-            pass
+from ds import print_tasks
 
 
 def main():
