@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 def trim(title, length):
     if (len(title) <= length):
         task_name = title[0:length]
@@ -31,4 +33,4 @@ def print_tasks(tasks):
         try:
             print_task(task)
         except Exception as e:
-            pass
+            print e.message
