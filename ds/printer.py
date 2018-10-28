@@ -25,7 +25,7 @@ def print_task(task):
 
     result['status'] = task['status']
     result['speed'] = Decimal(task['additional']['transfer']['speed_download']) / 1000 / 1000
-    print '{task_name}\t{status}\t{speed:0.2f}MB/s\t{progress:0.2f}%'.format(**result)
+    print('{task_name}\t{status}\t{speed:0.2f}MB/s\t{progress:0.2f}%'.format(**result))
 
 
 def print_tasks(tasks):
@@ -33,4 +33,4 @@ def print_tasks(tasks):
         try:
             print_task(task)
         except Exception as e:
-            print e.message
+            print(e.message)

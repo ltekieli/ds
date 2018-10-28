@@ -5,7 +5,7 @@ import json
 import os
 import random
 import string
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from ds import AuthApi
 from ds import TaskApi
@@ -43,16 +43,16 @@ def main():
         if args.create:
             for uri in args.create:
                 if session.task_api.create(uri).success:
-                    print "Torrent added succesfully"
+                    print("Torrent added succesfully")
                 else:
-                    print "ERROR! Torrent not added"
+                    print("ERROR! Torrent not added")
 
         if args.delete:
             for name in args.delete:
                 if session.task_api.delete(name).success:
-                    print "Torrent {} deleted succesfully".format(name)
+                    print("Torrent {} deleted succesfully".format(name))
                 else:
-                    print "ERROR! Torrent {} not deleted".format(name)
+                    print("ERROR! Torrent {} not deleted".format(name))
 
         if not args.create and not args.delete:
             data = session.task_api.list().data

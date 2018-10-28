@@ -1,8 +1,8 @@
 import json
 import random
 import string
-import urllib2
-from qb import QueryBuilder
+import urllib.request, urllib.error, urllib.parse
+from .qb import QueryBuilder
 
 
 def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
@@ -10,13 +10,13 @@ def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
 
 
 def get(url):
-    api_response = urllib2.urlopen(url).read()
+    api_response = urllib.request.urlopen(url).read()
     return json.loads(api_response)
 
 
 def post(url, request):
-    req = urllib2.Request(url, request)
-    api_response = urllib2.urlopen(req).read()
+    req = urllib.request.Request(url, request)
+    api_response = urllib.request.urlopen(req).read()
     return json.loads(api_response)
 
 

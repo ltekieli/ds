@@ -1,11 +1,11 @@
 from random import choice
-from string import lowercase
+from string import ascii_lowercase
 
 from ds.printer import trim
 
 
 def generate_string(length):
-    return "".join(choice(lowercase) for i in range(length))
+    return "".join(choice(ascii_lowercase) for i in range(length))
 
 
 def generate_empty_string(length):
