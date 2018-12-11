@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+
 def trim(title, length):
     if (len(title) <= length):
         task_name = title[0:length]

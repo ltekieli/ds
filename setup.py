@@ -9,4 +9,6 @@ setup(name='ds',
       license='MIT',
       packages=find_packages(),
       scripts=['bin/synods'],
-      zip_safe=False)
+      zip_safe=False,
+      extras_require={'test': ['mock', 'pytest', 'pytest-cov']}
+)

@@ -1,9 +1,7 @@
 import json
 import pytest
-
 from mock import patch, Mock
-
-from ds import *
+from ds.api import AuthApi, LoginFailed, LogoutFailed
 
 
 @patch('ds.api.urllib.request.urlopen')

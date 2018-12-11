@@ -2,7 +2,8 @@ import json
 import random
 import string
 import urllib.request, urllib.error, urllib.parse
-from .qb import QueryBuilder
+from contextlib import contextmanager
+from ds.qb import QueryBuilder
 
 
 def id_generator(size=12, chars=string.ascii_uppercase + string.digits):
@@ -148,18 +149,9 @@ class TaskApi(Api):
             raise DeleteFailed()
 
 
-class Session:
-    def __init__(self, host, port, username, password):
-        self.auth_api = AuthApi(host, port)
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-
-    def __enter__(self):
-        self.id = self.auth_api.login(self.username, self.password)
-        self.task_api = TaskApi(self.host, self.port, self.id)
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.auth_api.logout()
+@contextmanager
+def session(host, port, username, password):
+    auth_api = AuthApi(host, port)
+    id = auth_api.login(username, password)
+    yield TaskApi(host, port, id)
+    auth_api.logout()

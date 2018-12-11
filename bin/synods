@@ -1,17 +1,9 @@
 #!/usr/bin/python
 
 import argparse
-import json
 import os
-import random
-import string
-import urllib.request, urllib.error, urllib.parse
-
-from ds import AuthApi
-from ds import TaskApi
-from ds import Response
-from ds import Session
-from ds import print_tasks
+from ds.api import session
+from ds.printer import print_tasks
 
 
 def main():
@@ -39,23 +31,23 @@ def main():
     if not args.passwd:
         args.passwd = os.environ['SYNO_PASSWD']
 
-    with Session(args.ip, args.port, args.user, args.passwd) as session:
+    with session(args.ip, args.port, args.user, args.passwd) as task_api:
         if args.create:
             for uri in args.create:
-                if session.task_api.create(uri).success:
+                if task_api.create(uri).success:
                     print("Torrent added succesfully")
                 else:
                     print("ERROR! Torrent not added")
 
         if args.delete:
             for name in args.delete:
-                if session.task_api.delete(name).success:
+                if task_api.delete(name).success:
                     print("Torrent {} deleted succesfully".format(name))
                 else:
                     print("ERROR! Torrent {} not deleted".format(name))
 
         if not args.create and not args.delete:
-            data = session.task_api.list().data
+            data = task_api.list().data
             print_tasks(data["tasks"])
 
 

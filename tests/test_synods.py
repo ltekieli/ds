@@ -1,6 +1,7 @@
 from random import choice
 from string import ascii_lowercase
 
+
 from ds.printer import trim
 
 

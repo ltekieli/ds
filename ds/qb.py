@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import urllib.request, urllib.parse, urllib.error
 
+
 class QueryBuilder:
     def __init__(self):
         self._param = dict()

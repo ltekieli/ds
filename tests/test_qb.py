@@ -1,5 +1,6 @@
 from ds.qb import QueryBuilder
 
+
 def helper_get_login_builder():
     builder = QueryBuilder()
     builder.host = "192.168.1.250"
